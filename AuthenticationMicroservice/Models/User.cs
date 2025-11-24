@@ -14,7 +14,8 @@ public enum Rol
     Medico,
     Enfermero,
     PersonalAdministrativo,
-    RecursosHumanos
+    RecursosHumanos,
+    SoporteTecnico
 }
 
 public class User
