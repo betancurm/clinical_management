@@ -1,9 +1,7 @@
-using AuthenticationMicroservice;
-using AuthenticationMicroservice.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using MedicalOrdersMicroservice;
+using MedicalOrdersMicroservice.Configurations;
+using MedicalOrdersMicroservice.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,34 +34,18 @@ builder.Services.AddSwaggerGen(c =>
 
 // Configurar DbContext con InMemory por defecto para pruebas
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseInMemoryDatabase("AuthenticationDb")
+    options.UseInMemoryDatabase("MedicalOrdersDb")
     // Para activar SQL Server, descomentar la línea siguiente y proporcionar la cadena de conexión
     // .UseSqlServer("<cadena_de_conexión>");
 );
 
-// Registrar servicios
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<AuthService>();
-
 // Configurar autenticación JWT
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = "ClinicalManagement",
-            ValidAudience = "ClinicalManagement",
-            // Clave secreta hardcodeada para ejemplo - mover a configuración segura en producción
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MiClaveSecretaSuperLargaParaJWTQueDebeSerDeAlMenos32CaracteresParaSeguridad"))
-        };
-    });
+builder.Services.AddJwtAuthentication();
 
-// Configurar autorización con roles
-builder.Services.AddAuthorization();
+// Registrar servicios
+builder.Services.AddScoped<IOrdenMedicaService, OrdenMedicaService>();
+builder.Services.AddHttpClient<IPatientValidationService, PatientValidationService>();
+builder.Services.AddScoped<IPatientValidationService, PatientValidationService>();
 
 var app = builder.Build();
 
@@ -82,12 +64,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-// Ejecutar seeder para usuario por defecto
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    Seeder.Seed(context);
-}
 
 app.Run();

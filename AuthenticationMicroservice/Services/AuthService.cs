@@ -40,6 +40,7 @@ public class AuthService
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(ClaimTypes.Role, user.Rol.ToString()),
             new Claim("username", user.NombreUsuario),
+            new Claim("cedula", user.NumeroCedula),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
@@ -47,7 +48,7 @@ public class AuthService
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            issuer: "AuthenticationMicroservice",
+            issuer: "ClinicalManagement",
             audience: "ClinicalManagement",
             claims: claims,
             expires: DateTime.Now.AddHours(1),
