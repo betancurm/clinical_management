@@ -7,7 +7,7 @@ namespace InventoryMicroservice.Controllers;
 
 [ApiController]
 [Route("api/medicamentos")]
-[Authorize(Roles = "SoporteTecnico,Enfermera")]
+[Authorize(Roles = "SoporteTecnico,Enfermero,Medico")]
 public class MedicamentosController : ControllerBase
 {
     private readonly IMedicamentoService _medicamentoService;
@@ -26,6 +26,8 @@ public class MedicamentosController : ControllerBase
     }
 
     [HttpGet]
+    //[Authorize(Roles = "SoporteTecnico,Enfermero,Medico")]
+
     public async Task<IActionResult> GetMedicamentos([FromQuery] MedicamentoFilter filter)
     {
         // If no filter is provided, return all medicamentos

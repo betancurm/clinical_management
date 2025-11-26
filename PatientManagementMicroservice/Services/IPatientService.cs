@@ -8,5 +8,6 @@ public interface IPatientService
     Patient UpdatePatient(string numeroIdentificacion, Patient updatedPatient, PatientExtraInfo? extraInfo = null);
     void DeletePatient(string numeroIdentificacion);
     Patient GetPatientByNumeroIdentificacion(string numeroIdentificacion);
+    Patient GetPatientById(Guid id);
     IEnumerable<Patient> GetPatients();
 }

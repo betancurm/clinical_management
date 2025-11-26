@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -46,6 +47,8 @@ builder.Services.AddJwtAuthentication();
 builder.Services.AddScoped<IOrdenMedicaService, OrdenMedicaService>();
 builder.Services.AddHttpClient<IPatientValidationService, PatientValidationService>();
 builder.Services.AddScoped<IPatientValidationService, PatientValidationService>();
+builder.Services.AddHttpClient<IAppointmentValidationService, AppointmentValidationService>();
+builder.Services.AddScoped<IAppointmentValidationService, AppointmentValidationService>();
 
 var app = builder.Build();
 
@@ -53,7 +56,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c=>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "MedicalOrdersMicroservice v1");
+        c.DocumentTitle = "Medical Orders API";
+        
+    });
 }
 
 app.UseHttpsRedirection();

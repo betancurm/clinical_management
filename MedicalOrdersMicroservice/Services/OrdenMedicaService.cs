@@ -10,15 +10,24 @@ public class OrdenMedicaService : IOrdenMedicaService
 {
     private readonly ApplicationDbContext _context;
     private readonly IPatientValidationService _patientValidationService;
+    private readonly IAppointmentValidationService _appointmentValidationService;
 
-    public OrdenMedicaService(ApplicationDbContext context, IPatientValidationService patientValidationService)
+    public OrdenMedicaService(ApplicationDbContext context, IPatientValidationService patientValidationService, IAppointmentValidationService appointmentValidationService)
     {
         _context = context;
         _patientValidationService = patientValidationService;
+        _appointmentValidationService = appointmentValidationService;
     }
 
     public async Task<OrdenMedicaDto> CreateAsync(OrdenMedica orden)
     {
+        // Obtener cédula del paciente desde la cita
+        var cedulaPaciente = await _appointmentValidationService.GetPatientCedulaByAppointmentIdAsync(orden.CitaId);
+        if (string.IsNullOrEmpty(cedulaPaciente))
+            throw new ValidationException("No se pudo obtener la cédula del paciente desde la cita especificada.");
+
+        orden.CedulaPaciente = cedulaPaciente;
+
         // Generar NumeroOrden único automáticamente
         string numeroOrden = await GenerateUniqueNumeroOrden();
         orden.NumeroOrden = numeroOrden;

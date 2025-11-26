@@ -71,7 +71,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthenticationMicroservice v1");
+        c.DocumentTitle = "Authentication API";
+    });
 }
 
 app.UseHttpsRedirection();

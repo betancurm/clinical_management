@@ -8,7 +8,7 @@ namespace PatientManagementMicroservice.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize(Roles = "PersonalAdministrativo")]
+[Authorize(Roles = "Medico")]
 public class PatientsController : ControllerBase
 {
     private readonly IPatientService _patientService;
@@ -65,6 +65,13 @@ public class PatientsController : ControllerBase
     public IActionResult GetPatient(string numeroIdentificacion)
     {
         var patient = _patientService.GetPatientByNumeroIdentificacion(numeroIdentificacion);
+        return Ok(patient);
+    }
+
+    [HttpGet("by-id/{id}")]
+    public IActionResult GetPatientById(Guid id)
+    {
+        var patient = _patientService.GetPatientById(id);
         return Ok(patient);
     }
 

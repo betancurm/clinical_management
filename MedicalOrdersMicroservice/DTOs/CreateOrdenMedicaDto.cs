@@ -4,7 +4,6 @@ namespace MedicalOrdersMicroservice.DTOs;
 
 public class CreateOrdenMedicaDto
 {
-    public string CedulaPaciente { get; set; }
     public Guid CitaId { get; set; }
     public TipoOrden TipoOrden { get; set; }
     public IEnumerable<MedicamentoDetalleDto> Medicamentos { get; set; } = new List<MedicamentoDetalleDto>();

@@ -31,7 +31,6 @@ public class OrdenesController : ControllerBase
 
         var orden = new OrdenMedica
         {
-            CedulaPaciente = dto.CedulaPaciente,
             CedulaMedico = cedulaMedico,
             CitaId = dto.CitaId,
             TipoOrden = dto.TipoOrden

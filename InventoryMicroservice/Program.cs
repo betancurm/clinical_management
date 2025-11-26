@@ -1,15 +1,14 @@
 using InventoryMicroservice;
+using InventoryMicroservice.Configurations;
 using InventoryMicroservice.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -46,21 +45,7 @@ builder.Services.AddScoped<IMedicamentoService, MedicamentoService>();
 builder.Services.AddScoped<IMedicamentoLoteService, MedicamentoLoteService>();
 
 // Configurar autenticación JWT
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = "InventoryMicroservice",
-            ValidAudience = "ClinicalManagement",
-            // Clave secreta hardcodeada para ejemplo - mover a configuración segura en producción
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MiClaveSecretaSuperLargaParaJWTQueDebeSerDeAlMenos32CaracteresParaSeguridad"))
-        };
-    });
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 // Configurar autorización con roles
 builder.Services.AddAuthorization();
@@ -78,7 +63,11 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c=>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "InventoryMicroservice v1");
+        c.DocumentTitle = "Inventory API";
+    });
 }
 
 app.UseHttpsRedirection();

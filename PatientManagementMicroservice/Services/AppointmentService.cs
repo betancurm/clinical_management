@@ -86,4 +86,29 @@ public class AppointmentService : IAppointmentService
 
         return _context.Appointments.Where(a => a.PatientId == patient.Id).ToList();
     }
+
+    public Appointment GetAppointmentById(Guid appointmentId)
+    {
+        var appointment = _context.Appointments.Find(appointmentId);
+        if (appointment == null)
+            throw new NotFoundException("Cita no encontrada.");
+
+        return appointment;
+    }
+
+    public Appointment UpdateAppointment(Guid appointmentId, Appointment updatedAppointment)
+    {
+        var appointment = _context.Appointments.Find(appointmentId);
+        if (appointment == null)
+            throw new NotFoundException("Cita no encontrada.");
+
+        PatientValidator.ValidateAppointment(updatedAppointment);
+
+        appointment.FechaHoraCita = updatedAppointment.FechaHoraCita;
+        appointment.Motivo = updatedAppointment.Motivo;
+        appointment.Estado = updatedAppointment.Estado;
+
+        _context.SaveChanges();
+        return appointment;
+    }
 }

@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace PatientManagementMicroservice.Configurations;
+namespace InventoryMicroservice.Configurations;
 
 public static class AuthConfiguration
 {

@@ -11,6 +11,18 @@ public static class Seeder
         {
             new User
             {
+                PrimerNombre = "Eduardo",
+                PrimerApellido = "cast",
+                NumeroCedula = "111111111",
+                TipoDocumento = TipoDocumento.Cedula,
+                CorreoElectronico = "juan.perez@yopmail.com",
+                NumeroTelefono = "3001111111",
+                FechaNacimiento = new DateTime(1985, 5, 15),
+                Direccion = "Calle 1 #10-20",
+                Rol = Rol.SoporteTecnico
+            },
+            new User
+            {
                 PrimerNombre = "Juan",
                 PrimerApellido = "Pérez",
                 NumeroCedula = "111111111",

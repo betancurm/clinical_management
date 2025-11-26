@@ -68,7 +68,66 @@ public static class Seeder
             context.Patients.Add(patient2);
             context.SaveChanges();
 
-            Console.WriteLine("Seeder ejecutado: 2 pacientes agregados con información de contacto y póliza de seguro.");
+            // Agregar citas para paciente 1
+            var appointment1_1 = new Appointment
+            {
+                Id = Guid.NewGuid(),
+                PatientId = patient1.Id,
+                FechaHoraCita = DateTime.Now.AddDays(1).AddHours(9),
+                Motivo = "Consulta general",
+                Estado = EstadoCita.Programada
+            };
+
+            var appointment1_2 = new Appointment
+            {
+                Id = Guid.NewGuid(),
+                PatientId = patient1.Id,
+                FechaHoraCita = DateTime.Now.AddDays(7).AddHours(10),
+                Motivo = "Chequeo rutinario",
+                Estado = EstadoCita.Programada
+            };
+
+            var appointment1_3 = new Appointment
+            {
+                Id = Guid.NewGuid(),
+                PatientId = patient1.Id,
+                FechaHoraCita = DateTime.Now.AddDays(14).AddHours(11),
+                Motivo = "Seguimiento tratamiento",
+                Estado = EstadoCita.Programada
+            };
+
+            // Agregar citas para paciente 2
+            var appointment2_1 = new Appointment
+            {
+                Id = Guid.NewGuid(),
+                PatientId = patient2.Id,
+                FechaHoraCita = DateTime.Now.AddDays(2).AddHours(14),
+                Motivo = "Consulta especializada",
+                Estado = EstadoCita.Programada
+            };
+
+            var appointment2_2 = new Appointment
+            {
+                Id = Guid.NewGuid(),
+                PatientId = patient2.Id,
+                FechaHoraCita = DateTime.Now.AddDays(10).AddHours(15),
+                Motivo = "Examen médico",
+                Estado = EstadoCita.Programada
+            };
+
+            var appointment2_3 = new Appointment
+            {
+                Id = Guid.NewGuid(),
+                PatientId = patient2.Id,
+                FechaHoraCita = DateTime.Now.AddDays(21).AddHours(16),
+                Motivo = "Control post-operatorio",
+                Estado = EstadoCita.Programada
+            };
+
+            context.Appointments.AddRange(appointment1_1, appointment1_2, appointment1_3, appointment2_1, appointment2_2, appointment2_3);
+            context.SaveChanges();
+
+            Console.WriteLine("Seeder ejecutado: 2 pacientes agregados con información de contacto, póliza de seguro y 3 citas cada uno.");
         }
     }
 }

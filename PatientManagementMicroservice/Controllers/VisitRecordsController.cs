@@ -7,7 +7,7 @@ namespace PatientManagementMicroservice.Controllers;
 
 [ApiController]
 [Route("api/patients/{numeroIdentificacion}/visits")]
-//[Authorize(Roles = "Enfermera")]
+[Authorize(Roles = "Enfermero")]
 public class VisitRecordsController : ControllerBase
 {
     private readonly IVisitRecordService _visitRecordService;
@@ -32,7 +32,7 @@ public class VisitRecordsController : ControllerBase
     }
 
     [HttpGet]
-    //[Authorize(Roles = "Enfermera,PersonalAdministrativo,Medico")]
+    [Authorize(Roles = "Enfermero,Medico")]
     public async Task<IActionResult> GetVisitRecords(string numeroIdentificacion)
     {
         var visitRecords = await _visitRecordService.GetByPatientAsync(numeroIdentificacion);
@@ -40,7 +40,7 @@ public class VisitRecordsController : ControllerBase
     }
 
     [HttpGet("{visitId}")]
-    //[Authorize(Roles = "Enfermera,PersonalAdministrativo,Medico")]
+    [Authorize(Roles = "Enfermero,Medico")]
     public async Task<IActionResult> GetVisitRecord(string numeroIdentificacion, Guid visitId)
     {
         var visitRecord = await _visitRecordService.GetByIdAsync(numeroIdentificacion, visitId);

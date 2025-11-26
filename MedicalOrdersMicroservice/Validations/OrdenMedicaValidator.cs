@@ -22,11 +22,11 @@ public static class OrdenMedicaValidator
 
     public static void ValidateBusinessRules(OrdenMedica orden)
     {
-        // Exclusividad de ayuda diagnóstica
-        if (orden.TipoOrden == TipoOrden.AyudaDiagnostica)
+        // Exclusividad de ayuda diagnóstica: si hay ayudas diagnósticas, no puede haber medicamentos ni procedimientos
+        if (orden.AyudasDiagnosticas.Any())
         {
             if (orden.Medicamentos.Any() || orden.Procedimientos.Any())
-                throw new BusinessException("Una orden de ayuda diagnóstica no puede incluir medicamentos ni procedimientos.");
+                throw new BusinessException("Cuando se receta una ayuda diagnóstica no puede recetarse procedimiento ni medicamento ya que no se tiene certeza del diagnóstico.");
         }
 
         // Unicidad de NumeroItem en la orden

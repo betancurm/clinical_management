@@ -2,8 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using PatientManagementMicroservice.Exceptions;
 using PatientManagementMicroservice.Models;
 using PatientManagementMicroservice.Validations;
-using Microsoft.EntityFrameworkCore;
-
 namespace PatientManagementMicroservice.Services;
 
 public class PatientService : IPatientService
@@ -117,6 +115,19 @@ public class PatientService : IPatientService
             .Include(p => p.ExtraInfo)
             .Include(p => p.Appointments)
             .FirstOrDefault(p => p.NumeroIdentificacion == numeroIdentificacion);
+
+        if (patient == null)
+            throw new NotFoundException("Paciente no encontrado.");
+
+        return patient;
+    }
+
+    public Patient GetPatientById(Guid id)
+    {
+        var patient = _context.Patients
+            .Include(p => p.ExtraInfo)
+            .Include(p => p.Appointments)
+            .FirstOrDefault(p => p.Id == id);
 
         if (patient == null)
             throw new NotFoundException("Paciente no encontrado.");

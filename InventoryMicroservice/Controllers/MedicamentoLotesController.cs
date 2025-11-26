@@ -7,7 +7,7 @@ namespace InventoryMicroservice.Controllers;
 
 [ApiController]
 [Route("api/medicamentos/{medicamentoId}/lotes")]
-[Authorize(Roles = "SoporteTecnico,Enfermera")]
+[Authorize(Roles = "SoporteTecnico,Enfermero")]
 public class MedicamentoLotesController : ControllerBase
 {
     private readonly IMedicamentoLoteService _loteService;

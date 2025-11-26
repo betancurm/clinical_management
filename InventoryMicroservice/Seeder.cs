@@ -106,6 +106,40 @@ public static class Seeder
         context.Medicamentos.AddRange(medicamentos);
         context.SaveChanges();
 
-        Console.WriteLine("Seeder ejecutado: 10 medicamentos agregados al inventario.");
+        // Crear lotes para cada medicamento (2 lotes por medicamento)
+        var lotes = new List<MedicamentoLote>();
+        var random = new Random();
+
+        foreach (var medicamento in medicamentos)
+        {
+            // Lote 1
+            lotes.Add(new MedicamentoLote
+            {
+                Id = Guid.NewGuid(),
+                MedicamentoId = medicamento.Id,
+                Lote = $"LOT-{medicamento.Nombre.Replace(" ", "").Substring(0, 3).ToUpper()}-001",
+                FechaFabricacion = DateTime.Now.AddDays(-random.Next(30, 365)),
+                FechaExpiracion = DateTime.Now.AddMonths(random.Next(6, 24)),
+                CantidadDisponible = random.Next(50, 200),
+                Activo = true
+            });
+
+            // Lote 2
+            lotes.Add(new MedicamentoLote
+            {
+                Id = Guid.NewGuid(),
+                MedicamentoId = medicamento.Id,
+                Lote = $"LOT-{medicamento.Nombre.Replace(" ", "").Substring(0, 3).ToUpper()}-002",
+                FechaFabricacion = DateTime.Now.AddDays(-random.Next(30, 365)),
+                FechaExpiracion = DateTime.Now.AddMonths(random.Next(6, 24)),
+                CantidadDisponible = random.Next(50, 200),
+                Activo = true
+            });
+        }
+
+        context.MedicamentoLotes.AddRange(lotes);
+        context.SaveChanges();
+
+        Console.WriteLine("Seeder ejecutado: 10 medicamentos y 20 lotes agregados al inventario.");
     }
 }

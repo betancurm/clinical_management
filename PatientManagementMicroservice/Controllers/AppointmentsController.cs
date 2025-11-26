@@ -8,7 +8,7 @@ namespace PatientManagementMicroservice.Controllers;
 
 [ApiController]
 [Route("api/patients/{numeroIdentificacion}/appointments")]
-[Authorize(Roles = "PersonalAdministrativo")]
+[Authorize(Roles = "Medico,PersonalAdministrativo")]
 public class AppointmentsController : ControllerBase
 {
     private readonly IAppointmentService _appointmentService;
@@ -65,5 +65,26 @@ public class AppointmentsController : ControllerBase
     {
         _appointmentService.DeleteAppointment(numeroIdentificacion, appointmentId);
         return NoContent();
+    }
+
+    [HttpGet("/api/patients/appointments/{appointmentId}")]
+    public IActionResult GetAppointmentById(Guid appointmentId)
+    {
+        var appointment = _appointmentService.GetAppointmentById(appointmentId);
+        return Ok(appointment);
+    }
+
+    [HttpPut("/api/patients/appointments/{appointmentId}")]
+    public IActionResult UpdateAppointment(Guid appointmentId, [FromBody] UpdateAppointmentRequest request)
+    {
+        var appointment = new Appointment
+        {
+            FechaHoraCita = request.FechaHoraCita,
+            Motivo = request.Motivo,
+            Estado = request.Estado
+        };
+
+        var updatedAppointment = _appointmentService.UpdateAppointment(appointmentId, appointment);
+        return Ok(updatedAppointment);
     }
 }
