@@ -12,6 +12,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<OrdenProcedimientoDetalle> OrdenProcedimientoDetalles { get; set; }
     public DbSet<OrdenAyudaDiagnosticaDetalle> OrdenAyudaDiagnosticaDetalles { get; set; }
 
+    public DbSet<Procedimiento> Procedimientos { get; set; }
+    public DbSet<AyudaDiagnostica> AyudasDiagnosticas { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Configurar claves compuestas
@@ -35,10 +38,20 @@ public class ApplicationDbContext : DbContext
             .WithMany(om => om.Procedimientos)
             .HasForeignKey(opd => opd.NumeroOrden);
 
+        modelBuilder.Entity<OrdenProcedimientoDetalle>()
+            .HasOne(opd => opd.Procedimiento)
+            .WithMany()
+            .HasForeignKey(opd => opd.ProcedimientoId);
+
         modelBuilder.Entity<OrdenAyudaDiagnosticaDetalle>()
             .HasOne(oad => oad.OrdenMedica)
             .WithMany(om => om.AyudasDiagnosticas)
             .HasForeignKey(oad => oad.NumeroOrden);
+
+        modelBuilder.Entity<OrdenAyudaDiagnosticaDetalle>()
+            .HasOne(oad => oad.AyudaDiagnostica)
+            .WithMany()
+            .HasForeignKey(oad => oad.AyudaDiagnosticaId);
 
         base.OnModelCreating(modelBuilder);
     }

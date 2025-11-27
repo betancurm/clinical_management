@@ -49,6 +49,8 @@ builder.Services.AddHttpClient<IPatientValidationService, PatientValidationServi
 builder.Services.AddScoped<IPatientValidationService, PatientValidationService>();
 builder.Services.AddHttpClient<IAppointmentValidationService, AppointmentValidationService>();
 builder.Services.AddScoped<IAppointmentValidationService, AppointmentValidationService>();
+builder.Services.AddScoped<IProcedimientoService, ProcedimientoService>();
+builder.Services.AddScoped<IAyudaDiagnosticaService, AyudaDiagnosticaService>();
 
 var app = builder.Build();
 
@@ -72,5 +74,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Ejecutar seeder para datos iniciales
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    Seeder.Seed(context);
+}
 
 app.Run();

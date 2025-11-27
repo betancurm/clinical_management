@@ -39,6 +39,33 @@ public class OrdenMedicaService : IOrdenMedicaService
         OrdenMedicaValidator.Validate(orden);
         OrdenMedicaValidator.ValidateBusinessRules(orden);
 
+        // Validar que los procedimientos existen
+        foreach (var proc in orden.Procedimientos)
+        {
+            if (!await _context.Procedimientos.AnyAsync(p => p.Id == proc.ProcedimientoId))
+                throw new ValidationException($"El procedimiento con ID {proc.ProcedimientoId} no existe.");
+        }
+
+        // Validar que las ayudas diagnósticas existen
+        foreach (var ayuda in orden.AyudasDiagnosticas)
+        {
+            if (!await _context.AyudasDiagnosticas.AnyAsync(a => a.Id == ayuda.AyudaDiagnosticaId))
+                throw new ValidationException($"La ayuda diagnóstica con ID {ayuda.AyudaDiagnosticaId} no existe.");
+        }
+
+        // Asignar costos desde el catálogo
+        foreach (var proc in orden.Procedimientos)
+        {
+            var procedimiento = await _context.Procedimientos.FindAsync(proc.ProcedimientoId);
+            proc.Costo = procedimiento!.Costo;
+        }
+
+        foreach (var ayuda in orden.AyudasDiagnosticas)
+        {
+            var ayudaDiagnostica = await _context.AyudasDiagnosticas.FindAsync(ayuda.AyudaDiagnosticaId);
+            ayuda.Costo = ayudaDiagnostica!.Costo;
+        }
+
         _context.OrdenesMedicas.Add(orden);
         await _context.SaveChangesAsync();
 
@@ -49,8 +76,8 @@ public class OrdenMedicaService : IOrdenMedicaService
     {
         var orden = await _context.OrdenesMedicas
             .Include(o => o.Medicamentos)
-            .Include(o => o.Procedimientos)
-            .Include(o => o.AyudasDiagnosticas)
+            .Include(o => o.Procedimientos).ThenInclude(opd => opd.Procedimiento)
+            .Include(o => o.AyudasDiagnosticas).ThenInclude(oad => oad.AyudaDiagnostica)
             .FirstOrDefaultAsync(o => o.NumeroOrden == numeroOrden);
 
         if (orden == null)
@@ -64,8 +91,8 @@ public class OrdenMedicaService : IOrdenMedicaService
         var ordenes = await _context.OrdenesMedicas
             .Where(o => o.CedulaPaciente == cedulaPaciente)
             .Include(o => o.Medicamentos)
-            .Include(o => o.Procedimientos)
-            .Include(o => o.AyudasDiagnosticas)
+            .Include(o => o.Procedimientos).ThenInclude(opd => opd.Procedimiento)
+            .Include(o => o.AyudasDiagnosticas).ThenInclude(oad => oad.AyudaDiagnostica)
             .ToListAsync();
 
         return ordenes.Select(MapToDto);
@@ -76,8 +103,8 @@ public class OrdenMedicaService : IOrdenMedicaService
         var ordenes = await _context.OrdenesMedicas
             .Where(o => o.CedulaMedico == cedulaMedico)
             .Include(o => o.Medicamentos)
-            .Include(o => o.Procedimientos)
-            .Include(o => o.AyudasDiagnosticas)
+            .Include(o => o.Procedimientos).ThenInclude(opd => opd.Procedimiento)
+            .Include(o => o.AyudasDiagnosticas).ThenInclude(oad => oad.AyudaDiagnostica)
             .ToListAsync();
 
         return ordenes.Select(MapToDto);
@@ -88,8 +115,8 @@ public class OrdenMedicaService : IOrdenMedicaService
         var ordenes = await _context.OrdenesMedicas
             .Where(o => o.CitaId == citaId)
             .Include(o => o.Medicamentos)
-            .Include(o => o.Procedimientos)
-            .Include(o => o.AyudasDiagnosticas)
+            .Include(o => o.Procedimientos).ThenInclude(opd => opd.Procedimiento)
+            .Include(o => o.AyudasDiagnosticas).ThenInclude(oad => oad.AyudaDiagnostica)
             .ToListAsync();
 
         return ordenes.Select(MapToDto);
@@ -100,8 +127,8 @@ public class OrdenMedicaService : IOrdenMedicaService
         var ordenes = await _context.OrdenesMedicas
             .Where(o => numeroOrdenes.Contains(o.NumeroOrden))
             .Include(o => o.Medicamentos)
-            .Include(o => o.Procedimientos)
-            .Include(o => o.AyudasDiagnosticas)
+            .Include(o => o.Procedimientos).ThenInclude(opd => opd.Procedimiento)
+            .Include(o => o.AyudasDiagnosticas).ThenInclude(oad => oad.AyudaDiagnostica)
             .ToListAsync();
 
         return ordenes.Select(MapToDto);
@@ -140,21 +167,19 @@ public class OrdenMedicaService : IOrdenMedicaService
             Procedimientos = orden.Procedimientos.Select(p => new ProcedimientoDetalleDto
             {
                 NumeroItem = p.NumeroItem,
-                NombreProcedimiento = p.NombreProcedimiento,
-                IdProcedimiento = p.IdProcedimiento,
+                NombreProcedimiento = p.Procedimiento!.Nombre,
+                IdProcedimiento = p.ProcedimientoId,
                 NumeroVeces = p.NumeroVeces,
                 Frecuencia = p.Frecuencia,
-                Costo = p.Costo,
                 RequiereEspecialista = p.RequiereEspecialista,
                 IdTipoEspecialidad = p.IdTipoEspecialidad
             }),
             AyudasDiagnosticas = orden.AyudasDiagnosticas.Select(a => new AyudaDiagnosticaDetalleDto
             {
                 NumeroItem = a.NumeroItem,
-                NombreAyudaDiagnostica = a.NombreAyudaDiagnostica,
-                IdAyudaDiagnostica = a.IdAyudaDiagnostica,
+                NombreAyudaDiagnostica = a.AyudaDiagnostica!.Nombre,
+                IdAyudaDiagnostica = a.AyudaDiagnosticaId,
                 Cantidad = a.Cantidad,
-                Costo = a.Costo,
                 RequiereEspecialista = a.RequiereEspecialista,
                 IdTipoEspecialidad = a.IdTipoEspecialidad
             })

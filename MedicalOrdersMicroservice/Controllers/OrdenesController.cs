@@ -12,10 +12,12 @@ namespace MedicalOrdersMicroservice.Controllers;
 public class OrdenesController : ControllerBase
 {
     private readonly IOrdenMedicaService _ordenService;
+    private readonly ApplicationDbContext _context;
 
-    public OrdenesController(IOrdenMedicaService ordenService)
+    public OrdenesController(IOrdenMedicaService ordenService, ApplicationDbContext context)
     {
         _ordenService = ordenService;
+        _context = context;
     }
 
     [HttpPost]
@@ -61,11 +63,9 @@ public class OrdenesController : ControllerBase
             {
                 NumeroOrden = orden.NumeroOrden,
                 NumeroItem = proc.NumeroItem,
-                NombreProcedimiento = proc.NombreProcedimiento,
-                IdProcedimiento = proc.IdProcedimiento,
+                ProcedimientoId = proc.IdProcedimiento,
                 NumeroVeces = proc.NumeroVeces,
                 Frecuencia = proc.Frecuencia,
-                Costo = proc.Costo,
                 RequiereEspecialista = proc.RequiereEspecialista,
                 IdTipoEspecialidad = proc.RequiereEspecialista ? proc.IdTipoEspecialidad : null
             });
@@ -78,10 +78,8 @@ public class OrdenesController : ControllerBase
             {
                 NumeroOrden = orden.NumeroOrden,
                 NumeroItem = ayuda.NumeroItem,
-                NombreAyudaDiagnostica = ayuda.NombreAyudaDiagnostica,
-                IdAyudaDiagnostica = ayuda.IdAyudaDiagnostica,
+                AyudaDiagnosticaId = ayuda.IdAyudaDiagnostica,
                 Cantidad = ayuda.Cantidad,
-                Costo = ayuda.Costo,
                 RequiereEspecialista = ayuda.RequiereEspecialista,
                 IdTipoEspecialidad = ayuda.RequiereEspecialista ? ayuda.IdTipoEspecialidad : null
             });

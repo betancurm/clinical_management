@@ -10,10 +10,7 @@ public class OrdenProcedimientoDetalle
     [Key]
     public int NumeroItem { get; set; }
 
-    [Required]
-    public string NombreProcedimiento { get; set; }
-
-    public Guid? IdProcedimiento { get; set; }
+    public Guid ProcedimientoId { get; set; }
 
     [Required]
     public int NumeroVeces { get; set; }
@@ -29,4 +26,5 @@ public class OrdenProcedimientoDetalle
 
     // Navegación
     public OrdenMedica OrdenMedica { get; set; }
+    public Procedimiento Procedimiento { get; set; }
 }

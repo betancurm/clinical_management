@@ -8,7 +8,7 @@ namespace PatientManagementMicroservice.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Medico")]
+[Authorize(Roles = "Medico,PersonalAdministrativo")]
 public class PatientsController : ControllerBase
 {
     private readonly IPatientService _patientService;

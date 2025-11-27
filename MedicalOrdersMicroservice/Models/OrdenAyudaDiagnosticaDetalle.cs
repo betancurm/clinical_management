@@ -10,10 +10,7 @@ public class OrdenAyudaDiagnosticaDetalle
     [Key]
     public int NumeroItem { get; set; }
 
-    [Required]
-    public string NombreAyudaDiagnostica { get; set; }
-
-    public Guid? IdAyudaDiagnostica { get; set; }
+    public Guid AyudaDiagnosticaId { get; set; }
 
     [Required]
     public int Cantidad { get; set; }
@@ -26,4 +23,5 @@ public class OrdenAyudaDiagnosticaDetalle
 
     // Navegación
     public OrdenMedica OrdenMedica { get; set; }
+    public AyudaDiagnostica AyudaDiagnostica { get; set; }
 }
