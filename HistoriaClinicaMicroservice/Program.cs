@@ -46,7 +46,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(
+        c => {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "HistoriaClinicaMicroservice v1");
+            c.DocumentTitle = "Historia Clinica API";
+        }
+    );
 }
 
 app.UseHttpsRedirection();

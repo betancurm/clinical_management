@@ -27,7 +27,6 @@ public class UsersController : ControllerBase
             PrimerApellido = request.PrimerApellido,
             SegundoApellido = request.SegundoApellido,
             NumeroCedula = request.NumeroCedula,
-            TipoDocumento = request.TipoDocumento,
             CorreoElectronico = request.CorreoElectronico,
             NumeroTelefono = request.NumeroTelefono,
             FechaNacimiento = request.FechaNacimiento,
@@ -36,14 +35,20 @@ public class UsersController : ControllerBase
         };
 
         var result = _userService.CreateUser(user);
-        return CreatedAtAction(nameof(GetUser), new { id = result.User.Id }, result);
+        return CreatedAtAction(nameof(GetUser), new { numeroCedula = result.User.NumeroCedula }, result);
     }
 
-    [HttpDelete("{id}")]
-    
-    public IActionResult DeleteUser(Guid id)
+    [HttpPut("{numeroCedula}")]
+    public IActionResult UpdateUser(string numeroCedula, [FromBody] UpdateUserRequest request)
     {
-        _userService.DeleteUser(id);
+        _userService.UpdateUser(numeroCedula, request);
+        return NoContent();
+    }
+
+    [HttpDelete("{numeroCedula}")]
+    public IActionResult DeleteUser(string numeroCedula)
+    {
+        _userService.DeleteUserByNumeroCedula(numeroCedula);
         return NoContent();
     }
 
@@ -54,10 +59,10 @@ public class UsersController : ControllerBase
         return Ok(users);
     }
 
-    [HttpGet("{id}")]
-    public IActionResult GetUser(Guid id)
+    [HttpGet("{numeroCedula}")]
+    public IActionResult GetUser(string numeroCedula)
     {
-        var user = _userService.GetUserById(id);
+        var user = _userService.GetUserByNumeroCedula(numeroCedula);
         return Ok(user);
     }
 }

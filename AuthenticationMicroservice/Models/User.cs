@@ -2,13 +2,6 @@ using System;
 
 namespace AuthenticationMicroservice.Models;
 
-public enum TipoDocumento
-{
-    Cedula,
-    Pasaporte,
-    CedulaExtranjeria
-}
-
 public enum Rol
 {
     Medico,
@@ -27,7 +20,6 @@ public class User
     public string? SegundoApellido { get; set; }
     public string NombreCompleto => $"{PrimerNombre} {(SegundoNombre != null ? SegundoNombre + " " : "")}{PrimerApellido}{(SegundoApellido != null ? " " + SegundoApellido : "")}".Trim();
     public string NumeroCedula { get; set; }
-    public TipoDocumento TipoDocumento { get; set; }
     public string CorreoElectronico { get; set; }
     public string NumeroTelefono { get; set; }
     public DateTime FechaNacimiento { get; set; }

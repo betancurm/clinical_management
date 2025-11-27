@@ -105,4 +105,45 @@ public class UserService
         if (user == null) throw new NotFoundException("Usuario no encontrado.");
         return user;
     }
+
+    public void UpdateUser(string numeroCedula, UpdateUserRequest request)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.NumeroCedula == numeroCedula);
+        if (user == null) throw new NotFoundException("Usuario no encontrado.");
+
+        // Actualizar campos
+        user.PrimerNombre = request.PrimerNombre;
+        user.SegundoNombre = request.SegundoNombre;
+        user.PrimerApellido = request.PrimerApellido;
+        user.SegundoApellido = request.SegundoApellido;
+        user.CorreoElectronico = request.CorreoElectronico;
+        user.NumeroTelefono = request.NumeroTelefono;
+        user.FechaNacimiento = request.FechaNacimiento;
+        user.Direccion = request.Direccion;
+        user.Rol = request.Rol;
+
+        // Validar el usuario actualizado
+        UserValidator.Validate(user);
+
+        // Verificar unicidad de cédula si cambió (pero como es el identificador, no cambia)
+        // Si se permite cambiar cédula, agregar validación
+
+        _context.Users.Update(user);
+        _context.SaveChanges();
+    }
+
+    public User GetUserByNumeroCedula(string numeroCedula)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.NumeroCedula == numeroCedula);
+        if (user == null) throw new NotFoundException("Usuario no encontrado.");
+        return user;
+    }
+
+    public void DeleteUserByNumeroCedula(string numeroCedula)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.NumeroCedula == numeroCedula);
+        if (user == null) throw new NotFoundException("Usuario no encontrado.");
+        _context.Users.Remove(user);
+        _context.SaveChanges();
+    }
 }

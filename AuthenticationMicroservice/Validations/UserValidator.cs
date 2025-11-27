@@ -13,8 +13,7 @@ public static class UserValidator
 
         // Número de cédula
         if (string.IsNullOrWhiteSpace(user.NumeroCedula)) throw new ValidationException("NumeroCedula es requerido.");
-        if (user.TipoDocumento == TipoDocumento.Cedula && !Regex.IsMatch(user.NumeroCedula, @"^\d+$")) throw new ValidationException("NumeroCedula debe contener solo dígitos para tipo Cédula.");
-        if (user.TipoDocumento != TipoDocumento.Cedula && !Regex.IsMatch(user.NumeroCedula, @"^[a-zA-Z0-9]+$")) throw new ValidationException("NumeroCedula debe contener solo letras y números para tipos distintos de Cédula.");
+        if (!Regex.IsMatch(user.NumeroCedula, @"^\d+$")) throw new ValidationException("NumeroCedula debe contener solo dígitos.");
 
         // Correo electrónico
         if (string.IsNullOrWhiteSpace(user.CorreoElectronico)) throw new ValidationException("CorreoElectronico es requerido.");
